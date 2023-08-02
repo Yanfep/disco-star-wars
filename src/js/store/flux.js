@@ -1,101 +1,93 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
-
-			peopleStarWars: [],
-			planetsStarWars: [],
-
+			favorites: [],
+			characters: [],
+			planets: [],
+			starships: [],
 		},
-		
 		actions: {
 			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
+
 			loadSomeData: () => {
 				/**
 					fetch().then().then(data => setStore({ "foo": data.bar }))
 				*/
 			},
-			changeColor: (index, color) => {
-				//get the store
+
+			addFavorite: (title) => {
+				// Utilizar metodo find de los arrays para buscar si tengo title, si no existe lo agrego y si existe no hace nada
+			
 				const store = getStore();
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
+				if(store.favorites.includes(title)){
+					console.log("Already in favorites");
+				}else{
+				setStore({ favorites: [...getStore().favorites, title] })
+				}
+	
 			},
 
-			fetchPeopleStarWars: async () => {
-				try {
-				  const response = await fetch('https://www.swapi.tech/api/people/');
-				  const data = await response.json();
-			  
-				  const characterPromises = data.results.map(async character => {
-					const characterResponse = await fetch(character.url);
-					const characterData = await characterResponse.json();
-					return {
-					  name: characterData.result.properties.name,
-					  gender: characterData.result.properties.gender,
-					  hairColor: characterData.result.properties.hair_color,
-					  eyeColor: characterData.result.properties.eye_color
-					};
-				  });
-			  
-				  const charactersWithDetails = await Promise.all(characterPromises);
-				  setStore({ peopleStarWars: charactersWithDetails });
-				} catch (err) {
-				  console.error(err);
-				  setStore({ peopleStarWars: [] });
-				}
-			  },
+			removeFavorite: (title) => {
+				// Tengo que enviar el mismo title, buscar si existe en el array igual que con el include y el remove. Con el filtro
 
-			  fetchPlanetsStarWars: async () => {
-				try {
-				  const response = await fetch('https://www.swapi.tech/api/planets/');
-				  const data = await response.json();
-			  
-				  const planetPromises = data.results.map(async planet => {
-					const planetResponse = await fetch(planet.url);
-					const planetData = await planetResponse.json();
-					return {
-					  name: planetData.result.properties.name,
-					  climate: planetData.result.properties.climate,
-					  terrain: planetData.result.properties.terrain,
-					  population: planetData.result.properties.population
-					};
-				  });
-			  
-				  const planetsWithDetails = await Promise.all(planetPromises);
-				  setStore({ planetsStarWars: planetsWithDetails });
-				} catch (err) {
-				  console.error(err);
-				  setStore({ planetsStarWars: [] });
+
+				setStore({
+					favorites: getStore().favorites.filter((item, i) => {
+						return item !== title;
+					})
+				})
+				//Esta fx recibe un id(indice del arr) y filtra todos los que sean distintos al arr que esta enviando y guarda el rdo en favorite
+			},
+
+			getCharacters: async () => {
+
+				if(localStorage.getItem('characters') === null){
+					const response = await fetch('https://www.swapi.tech/api/people');
+
+					if(response.ok) {
+
+						const data = await response.json();
+						localStorage.setItem('characters', JSON.stringify(data))
+					} else {
+						console.log('Error: ', response.status, response.statusText)
+					}
 				}
-			  },
+				
+			},
+
+			getPlanets: async () => {
+
+				if (localStorage.getItem('planets') === null) {
+
+					const response = await fetch('https://www.swapi.tech/api/planets');
+
+					if (response.ok) {
+						const data = await response.json();
+						localStorage.setItem('planets', JSON.stringify(data))
+					} else {
+						console.log('Error: ', response.status, response.statusText)
+					}
+				}
+			},
+
+			getStarships: async () => {
+
+				if (localStorage.getItem("starships") === null) {
+
+					const response = await fetch("https://swapi.tech/api/starships/")
+
+					if (response.ok) {
+						const data = await response.json()
+						localStorage.setItem("starships", JSON.stringify(data))
+					} else {
+						console.log('Error: ', response.status, response.statusText)
+
+					}
+				}
+			},
 		}
-	};
+	}
 };
 
 export default getState;
-
-
-

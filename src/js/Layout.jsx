@@ -2,13 +2,16 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 
-import { Home } from "./views/home";
-import { Demo } from "./views/demo";
-import { Single } from "./views/single";
+import { Home } from "./views/Home.jsx";
+import { Characters } from "./views/Characters.jsx";
+import { CharactersDetails } from "./views/CharactersDetails.jsx";
+import { Planets } from "./views/Planets.jsx";
+import { Starships } from "./views/Starships.jsx";
 import injectContext from "./store/appContext";
+import { Navbar } from "./component/Navbar.jsx";
+import { Footer } from "./component/Footer.jsx";
 
-import { Navbar } from "./component/navbar";
-import { Footer } from "./component/footer";
+
 
 //create your first component
 const Layout = () => {
@@ -17,14 +20,16 @@ const Layout = () => {
 	const basename = process.env.BASENAME || "";
 
 	return (
-		<div>
+		<div className="bg-black">
 			<BrowserRouter basename={basename}>
 				<ScrollToTop>
 					<Navbar />
 					<Routes>
-						<Route path="/" element={<Home />} />
-						<Route path="/demo" element={<Demo />} />
-						<Route path="/single/:theid" element={<Single />} />
+						<Route path="/" element={<Home />}></Route>
+						<Route path="/characters" element={< Characters />}></Route>
+						<Route path="/planets" element={< Planets />}></Route>
+						<Route path="/starships" element={< Starships />}></Route>
+						<Route path="/characters/:charactersId" element={< CharactersDetails />}></Route>
 						<Route path="*" element={<h1>Not found!</h1>} />
 					</Routes>
 					<Footer />
