@@ -13,7 +13,7 @@ export const Navbar = () => {
 					</Link>
 				</div>
 
-				<div className="col-4 d-flex justify-content-end align-items-center">
+				<div className="col-2 d-flex justify-content-end align-items-center">
 					< BtnFavorites />
 				</div>
 
